@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+ 	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+ 	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="orderMapper">
+	<resultMap id="orderMap" type="cn.yunhe.java.pojo.TvOrder">
+	    <id column="order_id" jdbcType="INTEGER" property="orderId" />
+	    <result column="order_sn" jdbcType="VARCHAR" property="orderSn" />
+	    <result column="user_id" jdbcType="VARCHAR" property="userId" />
+	    <result column="user_name" jdbcType="VARCHAR" property="userName" />
+	    <result column="user_card_number" jdbcType="VARCHAR" property="userCardNumber" />
+	    <result column="add_time" jdbcType="VARCHAR" property="addTime" />
+	    <result column="finish_time" jdbcType="VARCHAR" property="finishTime" />
+	    <result column="pay_sn" jdbcType="VARCHAR" property="paySn" />
+	    <result column="arrived_amount" jdbcType="DECIMAL" property="arrivedAmount" />
+	    <result column="goods_amount" jdbcType="DECIMAL" property="goodsAmount" />
+	    <result column="shipping_fee" jdbcType="DECIMAL" property="shippingFee" />
+	    <result column="order_amount" jdbcType="DECIMAL" property="orderAmount" />
+	    <result column="order_state" jdbcType="SMALLINT" property="orderState" />
+	    <result column="order_msg" jdbcType="VARCHAR" property="orderMsg" />
+	    <result column="integral_handsel" jdbcType="DECIMAL" property="integralHandsel" />
+	    <result column="service_point_id" jdbcType="INTEGER" property="servicePointId" />
+	    <result column="shipping_time" jdbcType="VARCHAR" property="shippingTime" />
+	    <result column="deliver_explain" jdbcType="VARCHAR" property="deliverExplain" />
+	    <result column="receiver_name" jdbcType="VARCHAR" property="receiverName" />
+	    <result column="receiver_address" jdbcType="VARCHAR" property="receiverAddress" />
+	    <result column="receiver_phone" jdbcType="VARCHAR" property="receiverPhone" />
+	    <result column="receive_province_id" jdbcType="INTEGER" property="receiveProvinceId" />
+	    <result column="receive_city_id" jdbcType="INTEGER" property="receiveCityId" />
+	    <result column="delivery_time" jdbcType="VARCHAR" property="deliveryTime" />
+	    <result column="receipt_method" jdbcType="SMALLINT" property="receiptMethod" />
+	    <result column="is_experie" jdbcType="SMALLINT" property="isExperie" />
+	    <result column="pay_method" jdbcType="SMALLINT" property="payMethod" />
+	    <result column="is_returngoods" jdbcType="SMALLINT" property="isReturngoods" />
+	  </resultMap>
+	<!-- 查询订单信息 -->
+	<select id="queryOrder" resultMap="orderMap"  parameterType="java.util.Map">
+		SELECT 
+			order_id,
+			order_sn,
+			user_id,
+			user_name,
+			user_card_number,
+			add_time,
+			order_amount,
+			order_state 
+		FROM tv_order
+		<where>
+		   <if test="orderSn != null and orderSn !=''">
+		       and order_sn=#{orderSn}
+		   </if>
+		   <if test="userId != null and userId !=''">
+		       and user_id=#{userId}
+		   </if>
+		   <if test="userName != null and userName !=''">
+		       and user_name=#{userName}
+		   </if>
+		   <if test="orderState != null and orderState !=''">
+		       and order_state=#{orderState}
+		   </if>
+		</where>
+	</select>	
+	
+</mapper>

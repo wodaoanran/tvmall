@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.yunhe.java.dao.inter.sysmgr.SysRolesDao">
+
+  <resultMap id="BaseResultMap" type="cn.yunhe.java.pojo.SysRoles">
+    <id column="role_id" jdbcType="INTEGER" property="roleId" />
+    <result column="role_name" jdbcType="VARCHAR" property="roleName" />
+    <result column="status" jdbcType="VARCHAR" property="status" />
+    <result column="create_time" jdbcType="VARCHAR" property="createTime" />
+    <result column="create_user" jdbcType="VARCHAR" property="createUser" />
+  </resultMap>
+
+
+
+  <sql id="Base_Column_List">
+    role_id, role_name, status, create_time, create_user
+  </sql>
+
+
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from sys_roles
+    where role_id = #{roleId,jdbcType=INTEGER}
+  </select>
+
+  <!-- 根据条件查询角色信息 -->
+  <select id="queryFactor" resultMap="BaseResultMap" parameterType="String">
+    select
+      <include refid="Base_Column_List"/>
+      from sys_roles
+      <where>
+        <if test="roleName!=null">
+           role_name like concat('%',#{roleName},'%')
+        </if>
+      </where>
+  </select>
+
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from sys_roles
+    where role_id = #{roleId,jdbcType=INTEGER}
+  </delete>
+
+
+  <insert id="insert" parameterType="cn.yunhe.java.pojo.SysRoles">
+    insert into sys_roles (role_id, role_name, status, 
+      create_time, create_user)
+    values (#{roleId,jdbcType=INTEGER}, #{roleName,jdbcType=VARCHAR}, #{status,jdbcType=VARCHAR}, 
+      #{createTime,jdbcType=VARCHAR}, #{createUser,jdbcType=VARCHAR})
+  </insert>
+
+  <insert id="insertSelective" parameterType="cn.yunhe.java.pojo.SysRoles">
+    insert into sys_roles
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="roleId != null">
+        role_id,
+      </if>
+      <if test="roleName != null">
+        role_name,
+      </if>
+      <if test="status != null">
+        status,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+      <if test="createUser != null">
+        create_user,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="roleId != null">
+        #{roleId,jdbcType=INTEGER},
+      </if>
+      <if test="roleName != null">
+        #{roleName,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        #{status,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=VARCHAR},
+      </if>
+      <if test="createUser != null">
+        #{createUser,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+
+  <update id="updateByPrimaryKeySelective" parameterType="cn.yunhe.java.pojo.SysRoles">
+    update sys_roles
+    <set>
+      <if test="roleName != null">
+        role_name = #{roleName,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        status = #{status,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=VARCHAR},
+      </if>
+      <if test="createUser != null">
+        create_user = #{createUser,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where role_id = #{roleId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="cn.yunhe.java.pojo.SysRoles">
+    update sys_roles
+    set role_name = #{roleName,jdbcType=VARCHAR},
+      status = #{status,jdbcType=VARCHAR},
+      create_time = #{createTime,jdbcType=VARCHAR},
+      create_user = #{createUser,jdbcType=VARCHAR}
+    where role_id = #{roleId,jdbcType=INTEGER}
+  </update>
+
+  <select id="queryRoleMenus" resultType="java.util.Map" parameterType="java.util.Map">
+    SELECT sp.id,sp.menu_id,sm.menu_name,
+    IFNULL(
+    (SELECT 1
+    FROM sys_role_rights srr
+    WHERE sp.id=srr.popedom_id AND srr.role_id=#{roleId}),0) AS ishave,
+    (SELECT COUNT(1)
+    FROM sys_menu sm2
+    WHERE sm.menu_id=sm2.pMenu_id) AS childNum
+    FROM sys_popedom sp LEFT JOIN sys_menu sm ON sp.menu_id = sm.menu_id
+    WHERE sp.item_type=1 AND sm.lev=#{lev} and sm.pmenu_id=#{pMenuId} order by sp.menu_id
+  </select>
+  <!-- 根据菜单id查询当前菜单对应的页面中的按钮信息 -->
+  <select id="queryMenuFunc" resultType="java.util.Map" parameterType="java.util.Map">
+    SELECT sp.id,sp.menu_id,sp.item_code,sp.item_name,
+    IFNULL(
+    (SELECT 1
+    FROM sys_role_rights srr
+    WHERE sp.id=srr.popedom_id AND srr.role_id=#{roleId}),0) AS ishave
+    FROM sys_popedom sp
+    WHERE sp.item_type=0 AND sp.menu_id=#{menuId}
+  </select>
+  <!-- 根据角色id删除当前角色的权限信息 -->
+  <delete id="deleteRightsByRoleId" parameterType="java.lang.Integer">
+        delete from sys_role_rights where role_id=#{roleId}
+   </delete>
+  <!--保存权限信息 -->
+  <insert id="saveRoleRights" parameterType="java.util.List" >
+    insert into sys_role_rights (role_id, popedom_id, create_time, create_user_id, create_user_name)
+    values
+    <foreach collection="list" item="emp" index="index" separator=",">
+      (#{emp.roleId}, #{emp.popedomId}, #{emp.createTime}, #{emp.createUserId}, #{emp.createUserName})
+    </foreach>
+  </insert>
+
+  <select id="queryRoleUsers" parameterType="Integer" resultType="Map">
+    SELECT user_id,role_id FROM sys_role_user
+        WHERE role_id=#{roleId}
+  </select>
+
+  <!-- 查询当前角色所拥有的所有按钮信息-->
+  <select id="queryRightsFunc" parameterType="Integer" resultType="Map">
+    SELECT sp.item_code, 1 AS flag
+    FROM sys_popedom sp
+    JOIN sys_role_rights srr ON sp.id=srr.popedom_id
+    WHERE srr.role_id=#{roleId} AND sp.item_type='0'
+    </select>
+
+</mapper>

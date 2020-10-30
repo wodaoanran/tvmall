@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.yunhe.java.dao.inter.goods.MallGoodsClassDao">
+
+  <resultMap id="baseResultMap" type="cn.yunhe.java.pojo.MallGoodsClass">
+	    <id column="gc_id" jdbcType="INTEGER" property="gcId" />
+	    <result column="type_id" jdbcType="INTEGER" property="typeId" />
+	    <result column="gc_name" jdbcType="VARCHAR" property="gcName" />
+	    <result column="gc_parent_id" jdbcType="INTEGER" property="gcParentId" />
+	    <result column="pGcName" jdbcType="VARCHAR" property="gcParentName" />
+	    <result column="gc_sort" jdbcType="SMALLINT" property="gcSort" />
+	    <result column="gc_description" jdbcType="VARCHAR" property="gcDescription" />
+	    <result column="gc_picPath" jdbcType="VARCHAR" property="gcPicpath" />
+	    <result column="childrenNum" jdbcType="INTEGER" property="childNum" />
+  </resultMap> 
+   <!-- 表中字段 -->
+   <sql id="BASE_COLUMN_LIST">
+    gc_id, type_id, gc_name, gc_parent_id, gc_sort, gc_description, gc_picPath
+  </sql> 
+  
+  <!-- 查询所有父级节点 -->
+  <select id="queryParent" resultMap="baseResultMap" parameterType="java.lang.String">
+    select
+      <include refid="BASE_COLUMN_LIST" />,
+      (SELECT COUNT(1) FROM mall_goods_class b WHERE b.gc_parent_id=a.gc_id ) childrenNum
+     from mall_goods_class a
+    where a.gc_parent_id=#{gcParentId} 
+      order by a.gc_id
+  </select>  
+
+  <select id="selectById" parameterType="java.lang.Integer" resultMap="baseResultMap">
+    select 
+    	<include refid="BASE_COLUMN_LIST" />, 
+    	 IFNULL((
+			SELECT  mgca.gc_name
+			FROM mall_goods_class mgca
+			WHERE mgca.gc_id = mgcb.gc_parent_id),'无') pGcName,
+			(SELECT COUNT(1) FROM mall_goods_class b WHERE b.gc_parent_id=mgcb.gc_id ) childrenNum
+    from mall_goods_class mgcb
+    	where mgcb.gc_id = #{gcId}
+  </select>
+  
+  <!-- 根据主键删除商品分类信息 -->
+  <delete id="deleteById"  parameterType="java.lang.Integer">
+    delete from 
+          mall_goods_class
+       where gc_id = #{gcId}
+  </delete>
+  
+  <!-- 新增商品分类信息 -->
+  <insert id="insertSelective" useGeneratedKeys="true" keyProperty="gcId" keyColumn="gc_id" parameterType="cn.yunhe.java.pojo.MallGoodsClass" >
+    insert into mall_goods_class
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="gcId != null" >
+        gc_id,
+      </if>
+      <if test="typeId != null" >
+        type_id,
+      </if>
+      <if test="gcName != null" >
+        gc_name,
+      </if>
+      <if test="gcParentId != null" >
+        gc_parent_id,
+      </if>
+      <if test="gcSort != null" >
+        gc_sort,
+      </if>
+      <if test="gcDescription != null" >
+        gc_description,
+      </if>
+      <if test="gcPicpath != null" >
+        gc_picPath,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="gcId != null" >
+        #{gcId,jdbcType=INTEGER},
+      </if>
+      <if test="typeId != null" >
+        #{typeId,jdbcType=INTEGER},
+      </if>
+      <if test="gcName != null" >
+        #{gcName,jdbcType=VARCHAR},
+      </if>
+      <if test="gcParentId != null" >
+        #{gcParentId,jdbcType=INTEGER},
+      </if>
+      <if test="gcSort != null" >
+        #{gcSort,jdbcType=SMALLINT},
+      </if>
+      <if test="gcDescription != null" >
+        #{gcDescription,jdbcType=VARCHAR},
+      </if>
+      <if test="gcPicpath != null" >
+        #{gcPicpath,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  
+  <!-- 新增商品分类信息 -->
+  <insert id="insert" parameterType="cn.yunhe.java.pojo.MallGoodsClass">
+    insert into 
+    	mall_goods_class 
+    	(gc_id, type_id, gc_name,gc_parent_id, 
+    	  gc_sort, gc_description,gc_picPath)
+    values 
+        (#{gcId}, #{typeId}, #{gcName},#{gcParentId}, 
+          #{gcSort}, #{gcDescription},#{gcPicpath})
+  </insert> 
+
+ <!-- 更新商品分类信息 -->
+  <update id="update" parameterType="cn.yunhe.java.pojo.MallGoodsClass">
+    update mall_goods_class
+    <set>
+      <if test="typeId != null">
+        type_id = #{typeId,jdbcType=INTEGER},
+      </if>
+      <if test="gcName != null">
+        gc_name = #{gcName,jdbcType=VARCHAR},
+      </if>
+      <if test="gcParentId != null">
+        gc_parent_id = #{gcParentId,jdbcType=INTEGER},
+      </if>
+      <if test="gcSort != null">
+        gc_sort = #{gcSort,jdbcType=SMALLINT},
+      </if>
+      <if test="gcDescription != null">
+        gc_description = #{gcDescription,jdbcType=VARCHAR},
+      </if>
+      <if test="gcPicpath != null">
+        gc_picPath = #{gcPicpath,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where gc_id = #{gcId,jdbcType=INTEGER}
+  </update>
+  
+  <update id="updateByPrimaryKey" parameterType="cn.yunhe.java.pojo.MallGoodsClass">
+    update mall_goods_class
+    set type_id = #{typeId,jdbcType=INTEGER},
+      gc_name = #{gcName,jdbcType=VARCHAR},
+      gc_parent_id = #{gcParentId,jdbcType=INTEGER},
+      gc_sort = #{gcSort,jdbcType=SMALLINT},
+      gc_description = #{gcDescription,jdbcType=VARCHAR},
+      gc_picPath = #{gcPicpath,jdbcType=VARCHAR}
+    where gc_id = #{gcId,jdbcType=INTEGER}
+  </update>
+</mapper>

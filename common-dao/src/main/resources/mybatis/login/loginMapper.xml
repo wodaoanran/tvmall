@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.yunhe.java.dao.inter.LoginDao">
+    <resultMap id="SYSUSERMAP" type="cn.yunhe.java.pojo.SysUser">
+        <id column="user_id" jdbcType="INTEGER" property="userId" />
+        <result column="login_name" jdbcType="VARCHAR" property="loginName" />
+        <result column="login_pwd" jdbcType="VARCHAR" property="loginPwd" />
+        <result column="user_name" jdbcType="VARCHAR" property="userName" />
+        <result column="province_id" jdbcType="INTEGER" property="provinceId" />
+        <result column="city_id" jdbcType="INTEGER" property="cityId" />
+        <result column="service_point_id" jdbcType="INTEGER" property="servicePointId" />
+        <result column="last_login_ip" jdbcType="VARCHAR" property="lastLoginIp" />
+        <result column="last_login_time" jdbcType="VARCHAR" property="lastLoginTime" />
+        <result column="login_times" jdbcType="INTEGER" property="loginTimes" />
+        <result column="status" jdbcType="SMALLINT" property="status" />
+        <result column="user_post" jdbcType="VARCHAR" property="userPost" />
+        <result column="create_time" jdbcType="VARCHAR" property="createTime" />
+        <result column="create_user_id" jdbcType="INTEGER" property="createUserId" />
+        <result column="create_user_name" jdbcType="VARCHAR" property="createUserName" />
+        <result column="update_user_id" jdbcType="INTEGER" property="updateUserId" />
+        <result column="update_user_name" jdbcType="VARCHAR" property="updateUserName" />
+        <result column="update_time" jdbcType="VARCHAR" property="updateTime" />
+    </resultMap>
+
+
+    <resultMap id="MENUOBJECT" type="cn.yunhe.java.pojo.MenuObject">
+        <result column="menu_id"  property="menuId" />
+        <result column="icon"  property="icon" />
+        <result column="rel"  property="rel" />
+        <result column="menu_name"  property="menuName" />
+        <result column="url"  property="url" />
+        <result column="pMenu_id"  property="pMenuId" />
+        <result column="menu_order"  property="menuOrder" />
+        <result column="subMenuNumbers"  property="subMenuNumbers" />
+    </resultMap>
+
+    <sql id="BASE_COLUMN_LIST">
+        user_id, login_name, login_pwd, user_name, province_id, city_id, service_point_id,
+        last_login_ip, last_login_time, login_times, status, user_post, create_time, create_user_id,
+        create_user_name, update_user_id, update_user_name, update_time
+    </sql>
+
+    <!-- 登录-->
+    <select id="login" parameterType="String" resultMap="SYSUSERMAP">
+       select
+       <include refid="BASE_COLUMN_LIST"/>
+       from sys_user
+       where login_name=#{loginName}
+    </select>
+
+    <!-- 修改登录信息 -->
+    <update id="updateLogin" parameterType="SysUser" >
+        update sys_user
+        <set>
+            last_login_ip = #{lastLoginIp},
+            last_login_time = #{lastLoginTime},
+            login_times = #{loginTimes}
+        </set>
+        where user_id=#{userId}
+
+    </update>
+
+
+    <!-- 查询菜单-->
+    <select id="queryMenus" parameterType="Map" resultMap="MENUOBJECT">
+        SELECT distinct sm.menu_id,sm.icon,sm.rel,sm.menu_name,sm.url,sm.pMenu_id,sm.menuOrder,
+        (SELECT COUNT(1) FROM sys_menu sysm WHERE sysm.pMenu_id=sm.menu_id ) subMenuNumbers
+        FROM sys_menu sm
+         JOIN sys_popedom sp ON sp.menu_id = sm.menu_id
+         JOIN sys_role_rights srr ON sp.id = srr.popedom_id
+         JOIN sys_role_user sru ON srr.role_id=sru.role_id
+        WHERE   sp.item_type=1  AND sm.lev=#{lev} and sru.user_id=#{userId}
+
+    </select>
+
+    <!-- 查询当前登录用户所拥有的所有按钮信息-->
+    <select id="queryRightsFunc" parameterType="Integer" resultType="Map">
+    SELECT sp.item_code, 1 AS flag
+    FROM sys_popedom sp
+    JOIN sys_role_rights srr ON sp.id=srr.popedom_id
+    JOIN sys_role_user sru ON srr.role_id=sru.role_id
+    WHERE sru.user_id=#{userId} AND sp.item_type='0'
+    </select>
+
+</mapper>

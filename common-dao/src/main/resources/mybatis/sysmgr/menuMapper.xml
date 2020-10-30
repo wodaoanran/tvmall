@@ -1,0 +1,248 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+ 	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+ 	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+ 	
+<mapper namespace="menuMapper">
+
+	<!-- 查询菜单 -->
+	<select id="queryMenu" resultType="java.util.Map" parameterType="java.util.Map">
+		select  sm.menu_id, sm.icon, 
+				sm.rel, sm.menu_name, 
+				sm.url, sm.lev, sm.pmenu_id, 
+				sm.menuOrder 
+		  from sys_menu sm 
+		order by sm.menu_id
+	</select>
+
+	<!-- 查询菜单项目，填充到下拉框中 -->
+	<select id="queryMenuSelect" resultType="java.util.Map">
+		select sm.menu_id, sm.menu_name, sm.lev from sys_menu sm where sm.lev &lt; 3 order by sm.menu_id
+	</select>
+
+	<!-- 生成菜单id -->
+	<select id="queryMenuId" resultType="java.lang.String" parameterType="java.lang.String">
+		SELECT CONCAT(LEFT(#{VALUE}, length(#{VALUE}) - 2), LPAD(ifnull(CAST(SUBSTR(MAX(menu_id), -2) AS signed), 0) + 1, 2, 0))
+		FROM sys_menu
+		WHERE menu_id LIKE #{VALUE}
+	</select>
+
+	<!-- 根据id查询菜单 -->
+	<select id="queryMenuById" resultType="java.util.Map" parameterType="java.lang.String">
+		SELECT * FROM sys_menu WHERE menu_id = #{VALUE}
+	</select>
+
+	<!-- 根据menu_id的模糊查询-->
+	<select id="queryMenuByIdLike"  resultType="java.lang.Integer" parameterType="java.lang.String">
+		SELECT count(*) FROM sys_menu WHERE menu_id LIKE #{VALUE}
+	</select>
+	
+
+	<!-- 保存菜单对象 -->
+	<insert id="saveMenu" parameterType="SysMenu" >
+		insert into sys_menu
+		<trim prefix="(" suffix=")" suffixOverrides="," >
+			<if test="menuId != null" >
+				menu_id,
+			</if>
+			<if test="icon != null" >
+				icon,
+			</if>
+			<if test="rel != null" >
+				rel,
+			</if>
+			<if test="menuName != null" >
+				menu_name,
+			</if>
+			<if test="url != null" >
+				url,
+			</if>
+			<if test="lev != null" >
+				lev,
+			</if>
+			<if test="pmenuId != null" >
+				pmenu_id,
+			</if>
+			<if test="menuOrder != null" >
+				menuOrder,
+			</if>
+			<if test="queryStr != null" >
+				query_str,
+			</if>
+			<if test="showNumber != null" >
+				show_number,
+			</if>
+			<if test="createTime != null" >
+				createDate,
+			</if>
+			<if test="createUser != null" >
+				createUser,
+			</if>
+			<if test="updateTime != null" >
+				updateDate,
+			</if>
+			<if test="updateUser != null" >
+				updateUser,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides="," >
+			<if test="menuId != null" >
+				#{menuId,jdbcType=VARCHAR},
+			</if>
+			<if test="icon != null" >
+				#{icon,jdbcType=VARCHAR},
+			</if>
+			<if test="rel != null" >
+				#{rel,jdbcType=VARCHAR},
+			</if>
+			<if test="menuName != null" >
+				#{menuName,jdbcType=VARCHAR},
+			</if>
+			<if test="url != null" >
+				#{url,jdbcType=VARCHAR},
+			</if>
+			<if test="lev != null" >
+				#{lev,jdbcType=VARCHAR},
+			</if>
+			<if test="pmenuId != null" >
+				#{pmenuId,jdbcType=VARCHAR},
+			</if>
+			<if test="menuOrder != null" >
+				#{menuOrder,jdbcType=INTEGER},
+			</if>
+			<if test="queryStr != null" >
+				#{queryStr,jdbcType=VARCHAR},
+			</if>
+			<if test="showNumber != null" >
+				#{showNumber,jdbcType=INTEGER},
+			</if>
+			<if test="createTime != null" >
+				#{createTime,jdbcType=VARCHAR},
+			</if>
+			<if test="createUser != null" >
+				#{createUser,jdbcType=VARCHAR},
+			</if>
+			<if test="updateTime != null" >
+				#{updateTime,jdbcType=VARCHAR},
+			</if>
+			<if test="updateUser != null" >
+				#{updateUser,jdbcType=VARCHAR},
+			</if>
+		</trim>
+	</insert>
+
+	<!-- 修改菜单 -->
+	<update id="updateMenu" parameterType="SysMenu" >
+		update sys_menu
+		<set >
+			<if test="icon != null" >
+				icon = #{icon,jdbcType=VARCHAR},
+			</if>
+			<if test="rel != null" >
+				rel = #{rel,jdbcType=VARCHAR},
+			</if>
+			<if test="menuName != null" >
+				menu_name = #{menuName,jdbcType=VARCHAR},
+			</if>
+			<if test="url != null" >
+				url = #{url,jdbcType=VARCHAR},
+			</if>
+			<if test="lev != null" >
+				lev = #{lev,jdbcType=VARCHAR},
+			</if>
+			<if test="pmenuId != null" >
+				pmenu_id = #{pmenuId,jdbcType=VARCHAR},
+			</if>
+			<if test="menuOrder != null" >
+				menuOrder = #{menuOrder,jdbcType=INTEGER},
+			</if>
+			<if test="queryStr != null" >
+				query_str = #{queryStr,jdbcType=VARCHAR},
+			</if>
+			<if test="showNumber != null" >
+				show_number = #{showNumber,jdbcType=INTEGER},
+			</if>
+			<if test="createTime != null" >
+				createDate = #{createTime,jdbcType=VARCHAR},
+			</if>
+			<if test="createUser != null" >
+				createUser = #{createUser,jdbcType=VARCHAR},
+			</if>
+			<if test="updateTime != null" >
+				updateDate = #{updateTime,jdbcType=VARCHAR},
+			</if>
+			<if test="updateUser != null" >
+				updateUser = #{updateUser,jdbcType=VARCHAR},
+			</if>
+		</set>
+		where menu_id = #{menuId,jdbcType=VARCHAR}
+	</update>
+
+	<!-- 删除一个菜单项 -->
+	<delete id="deleteMenu" parameterType="java.lang.String">
+		DELETE FROM sys_menu WHERE menu_id=#{VALUE}
+	</delete>
+
+	<!-- 生成对应的权限项 -->
+	<insert id="saveSysPopedom" parameterType="SysPopedom">
+		insert into sys_popedom
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+				id,
+			</if>
+			<if test="menuId != null">
+				menu_id,
+			</if>
+			<if test="itemCode != null">
+				item_code,
+			</if>
+			<if test="itemName != null">
+				item_name,
+			</if>
+			<if test="itemType != null">
+				item_type,
+			</if>
+			<if test="createUser != null">
+				createUser,
+			</if>
+			<if test="createTime != null">
+				createDate,
+			</if>
+			<if test="updateUser != null">
+				updateUser,
+			</if>
+			<if test="updateTime != null">
+				updateDate,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+				#{id,jdbcType=INTEGER},
+			</if>
+			<if test="menuId != null">
+				#{menuId,jdbcType=VARCHAR},
+			</if>
+			<if test="itemCode != null">
+				#{itemCode,jdbcType=VARCHAR},
+			</if>
+			<if test="itemName != null">
+				#{itemName,jdbcType=VARCHAR},
+			</if>
+			<if test="itemType != null">
+				#{itemType,jdbcType=VARCHAR},
+			</if>
+			<if test="createUser != null">
+				#{createUser,jdbcType=VARCHAR},
+			</if>
+			<if test="createTime != null">
+				#{createTime,jdbcType=VARCHAR},
+			</if>
+			<if test="updateUser != null">
+				#{updateUser,jdbcType=VARCHAR},
+			</if>
+			<if test="updateTime != null">
+				#{updateTime,jdbcType=VARCHAR},
+			</if>
+		</trim>
+	</insert>
+</mapper>

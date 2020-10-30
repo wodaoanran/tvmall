@@ -1,0 +1,374 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.yunhe.java.dao.inter.sysmgr.SysUserDao">
+
+  <resultMap id="BaseResultMap" type="cn.yunhe.java.pojo.SysUser">
+    <id column="user_id" jdbcType="INTEGER" property="userId" />
+    <result column="login_name" jdbcType="VARCHAR" property="loginName" />
+    <result column="login_pwd" jdbcType="VARCHAR" property="loginPwd" />
+    <result column="user_name" jdbcType="VARCHAR" property="userName" />
+    <result column="province_id" jdbcType="INTEGER" property="provinceId" />
+    <result column="city_id" jdbcType="INTEGER" property="cityId" />
+    <result column="service_point_id" jdbcType="INTEGER" property="servicePointId" />
+    <result column="last_login_ip" jdbcType="VARCHAR" property="lastLoginIp" />
+    <result column="last_login_time" jdbcType="VARCHAR" property="lastLoginTime" />
+    <result column="login_times" jdbcType="INTEGER" property="loginTimes" />
+    <result column="identity" jdbcType="INTEGER" property="identity" />
+    <result column="status" jdbcType="SMALLINT" property="status" />
+    <result column="user_post" jdbcType="VARCHAR" property="userPost" />
+    <result column="create_time" jdbcType="VARCHAR" property="createTime" />
+    <result column="create_user_id" jdbcType="INTEGER" property="createUserId" />
+    <result column="create_user_name" jdbcType="VARCHAR" property="createUserName" />
+    <result column="update_user_id" jdbcType="INTEGER" property="updateUserId" />
+    <result column="update_user_name" jdbcType="VARCHAR" property="updateUserName" />
+    <result column="update_time" jdbcType="VARCHAR" property="updateTime" />
+  </resultMap>
+
+  <resultMap id="OTHERBASERESULTMAP" type="cn.yunhe.java.pojo.SysUserMap">
+    <id column="user_id" jdbcType="INTEGER" property="userId" />
+    <result column="login_name" jdbcType="VARCHAR" property="loginName" />
+    <result column="login_pwd" jdbcType="VARCHAR" property="loginPwd" />
+    <result column="user_name" jdbcType="VARCHAR" property="userName" />
+    <result column="province_name" jdbcType="VARCHAR" property="provinceName" />
+    <result column="city_name" jdbcType="VARCHAR" property="cityName" />
+    <result column="service_point_name" jdbcType="VARCHAR" property="servicePointName" />
+    <result column="last_login_ip" jdbcType="VARCHAR" property="lastLoginIp" />
+    <result column="last_login_time" jdbcType="VARCHAR" property="lastLoginTime" />
+    <result column="login_times" jdbcType="INTEGER" property="loginTimes" />
+    <result column="identity" jdbcType="INTEGER" property="identity" />
+    <result column="status" jdbcType="SMALLINT" property="status" />
+    <result column="user_post" jdbcType="VARCHAR" property="userPost" />
+    <result column="create_time" jdbcType="VARCHAR" property="createTime" />
+    <result column="create_user_id" jdbcType="INTEGER" property="createUserId" />
+    <result column="create_user_name" jdbcType="VARCHAR" property="createUserName" />
+    <result column="update_user_id" jdbcType="INTEGER" property="updateUserId" />
+    <result column="update_user_name" jdbcType="VARCHAR" property="updateUserName" />
+    <result column="update_time" jdbcType="VARCHAR" property="updateTime" />
+  </resultMap>
+
+  <sql id="Base_Column_List">
+    user_id, login_name, login_pwd, user_name, province_id, city_id, service_point_id, 
+    last_login_ip, last_login_time, login_times, status, user_post, create_time, create_user_id, 
+    create_user_name, update_user_id, update_user_name, update_time
+  </sql>
+
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from sys_user
+    where user_id = #{userId,jdbcType=INTEGER}
+  </select>
+
+  <!-- 根据查询条件查询用户信息 -->
+  <select id="queryByFactory" parameterType="Map" resultMap="OTHERBASERESULTMAP">
+    select
+    user_id, login_name, login_pwd, user_name,identity,
+    (select area_name from sys_area sa where sa.area_id=su.province_id) province_name,
+    (select area_name from sys_area sa where sa.area_id=su.city_id) city_name,
+    (select area_name from sys_area sa where sa.area_id=su.service_point_id) service_point_name ,
+    last_login_ip, last_login_time, login_times, status, user_post, create_time, create_user_id,
+    create_user_name, update_user_id, update_user_name, update_time
+    from sys_user su
+    where 1=1
+    <if test="userName!=null">
+       and user_name like concat('%',#{userName},'%')
+    </if>
+    <if test="loginName!=null">
+      and login_name like concat('%',#{loginName},'%')
+    </if>
+    <if test="status!=null">
+      and status = #{status}
+    </if>
+     order by user_id
+  </select>
+
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from sys_user
+    where user_id = #{userId,jdbcType=INTEGER}
+  </delete>
+
+  <!-- 批量删除 -->
+  <delete id="deleteSysUserBatch" parameterType="List">
+    delete from sys_user
+    where user_id in
+    <foreach collection="list"  item="userId" separator="," open="(" close=")">
+      #{userId}
+    </foreach>
+  </delete>
+
+
+  <insert id="insert" parameterType="cn.yunhe.java.pojo.SysUser">
+    insert into sys_user (user_id, login_name, login_pwd, 
+      user_name, province_id,identity, city_id,
+      service_point_id, last_login_ip, last_login_time, 
+      login_times, status, user_post, 
+      create_time, create_user_id, create_user_name, 
+      update_user_id, update_user_name, update_time, 
+      province, city, service_point
+      )
+    values (#{userId,jdbcType=INTEGER}, #{loginName,jdbcType=VARCHAR}, #{loginPwd,jdbcType=VARCHAR}, 
+      #{userName,jdbcType=VARCHAR}, #{provinceId,jdbcType=INTEGER},#{identity,jdbcType=INTEGER}, #{cityId,jdbcType=INTEGER},
+      #{servicePointId,jdbcType=INTEGER}, #{lastLoginIp,jdbcType=VARCHAR}, #{lastLoginTime,jdbcType=VARCHAR}, 
+      #{loginTimes,jdbcType=INTEGER}, #{status,jdbcType=SMALLINT}, #{userPost,jdbcType=VARCHAR}, 
+      #{createTime,jdbcType=VARCHAR}, #{createUserId,jdbcType=INTEGER}, #{createUserName,jdbcType=VARCHAR}, 
+      #{updateUserId,jdbcType=INTEGER}, #{updateUserName,jdbcType=VARCHAR}, #{updateTime,jdbcType=VARCHAR}, 
+      #{province,jdbcType=INTEGER}, #{city,jdbcType=INTEGER}, #{servicePoint,jdbcType=INTEGER}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="cn.yunhe.java.pojo.SysUser">
+    insert into sys_user
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="userId != null">
+        user_id,
+      </if>
+      <if test="loginName != null">
+        login_name,
+      </if>
+      <if test="loginPwd != null">
+        login_pwd,
+      </if>
+      <if test="userName != null">
+        user_name,
+      </if>
+      <if test="provinceId != null">
+        province_id,
+      </if>
+      <if test="identity != null">
+        identity,
+      </if>
+      <if test="cityId != null">
+        city_id,
+      </if>
+      <if test="servicePointId != null">
+        service_point_id,
+      </if>
+      <if test="lastLoginIp != null">
+        last_login_ip,
+      </if>
+      <if test="lastLoginTime != null">
+        last_login_time,
+      </if>
+      <if test="loginTimes != null">
+        login_times,
+      </if>
+      <if test="status != null">
+        status,
+      </if>
+      <if test="userPost != null">
+        user_post,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+      <if test="createUserId != null">
+        create_user_id,
+      </if>
+      <if test="createUserName != null">
+        create_user_name,
+      </if>
+      <if test="updateUserId != null">
+        update_user_id,
+      </if>
+      <if test="updateUserName != null">
+        update_user_name,
+      </if>
+      <if test="updateTime != null">
+        update_time,
+      </if>
+      <if test="province != null">
+        province,
+      </if>
+      <if test="city != null">
+        city,
+      </if>
+      <if test="servicePoint != null">
+        service_point,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="userId != null">
+        #{userId,jdbcType=INTEGER},
+      </if>
+      <if test="loginName != null">
+        #{loginName,jdbcType=VARCHAR},
+      </if>
+      <if test="loginPwd != null">
+        #{loginPwd,jdbcType=VARCHAR},
+      </if>
+      <if test="userName != null">
+        #{userName,jdbcType=VARCHAR},
+      </if>
+      <if test="provinceId != null">
+        #{provinceId,jdbcType=INTEGER},
+      </if>
+      <if test="identity != null">
+        #{identity,jdbcType=INTEGER},
+      </if>
+      <if test="cityId != null">
+        #{cityId,jdbcType=INTEGER},
+      </if>
+      <if test="servicePointId != null">
+        #{servicePointId,jdbcType=INTEGER},
+      </if>
+      <if test="lastLoginIp != null">
+        #{lastLoginIp,jdbcType=VARCHAR},
+      </if>
+      <if test="lastLoginTime != null">
+        #{lastLoginTime,jdbcType=VARCHAR},
+      </if>
+      <if test="loginTimes != null">
+        #{loginTimes,jdbcType=INTEGER},
+      </if>
+      <if test="status != null">
+        #{status,jdbcType=SMALLINT},
+      </if>
+      <if test="userPost != null">
+        #{userPost,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=VARCHAR},
+      </if>
+      <if test="createUserId != null">
+        #{createUserId,jdbcType=INTEGER},
+      </if>
+      <if test="createUserName != null">
+        #{createUserName,jdbcType=VARCHAR},
+      </if>
+      <if test="updateUserId != null">
+        #{updateUserId,jdbcType=INTEGER},
+      </if>
+      <if test="updateUserName != null">
+        #{updateUserName,jdbcType=VARCHAR},
+      </if>
+      <if test="updateTime != null">
+        #{updateTime,jdbcType=VARCHAR},
+      </if>
+      <if test="province != null">
+        #{province,jdbcType=INTEGER},
+      </if>
+      <if test="city != null">
+        #{city,jdbcType=INTEGER},
+      </if>
+      <if test="servicePoint != null">
+        #{servicePoint,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+
+  <update id="updateByPrimaryKeySelective" parameterType="cn.yunhe.java.pojo.SysUser">
+    update sys_user
+    <set>
+      <if test="loginName != null">
+        login_name = #{loginName,jdbcType=VARCHAR},
+      </if>
+      <if test="loginPwd != null">
+        login_pwd = #{loginPwd,jdbcType=VARCHAR},
+      </if>
+      <if test="userName != null">
+        user_name = #{userName,jdbcType=VARCHAR},
+      </if>
+      <if test="provinceId != null">
+        province_id = #{provinceId,jdbcType=INTEGER},
+      </if>
+      <if test="identity != null">
+        identity = #{identity,jdbcType=INTEGER},
+      </if>
+      <if test="cityId != null">
+        city_id = #{cityId,jdbcType=INTEGER},
+      </if>
+      <if test="servicePointId != null">
+        service_point_id = #{servicePointId,jdbcType=INTEGER},
+      </if>
+      <if test="lastLoginIp != null">
+        last_login_ip = #{lastLoginIp,jdbcType=VARCHAR},
+      </if>
+      <if test="lastLoginTime != null">
+        last_login_time = #{lastLoginTime,jdbcType=VARCHAR},
+      </if>
+      <if test="loginTimes != null">
+        login_times = #{loginTimes,jdbcType=INTEGER},
+      </if>
+      <if test="status != null">
+        status = #{status,jdbcType=SMALLINT},
+      </if>
+      <if test="userPost != null">
+        user_post = #{userPost,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=VARCHAR},
+      </if>
+      <if test="createUserId != null">
+        create_user_id = #{createUserId,jdbcType=INTEGER},
+      </if>
+      <if test="createUserName != null">
+        create_user_name = #{createUserName,jdbcType=VARCHAR},
+      </if>
+      <if test="updateUserId != null">
+        update_user_id = #{updateUserId,jdbcType=INTEGER},
+      </if>
+      <if test="updateUserName != null">
+        update_user_name = #{updateUserName,jdbcType=VARCHAR},
+      </if>
+      <if test="updateTime != null">
+        update_time = #{updateTime,jdbcType=VARCHAR},
+      </if>
+      <if test="province != null">
+        province = #{province,jdbcType=INTEGER},
+      </if>
+      <if test="city != null">
+        city = #{city,jdbcType=INTEGER},
+      </if>
+      <if test="servicePoint != null">
+        service_point = #{servicePoint,jdbcType=INTEGER},
+      </if>
+    </set>
+    where user_id = #{userId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="cn.yunhe.java.pojo.SysUser">
+    update sys_user
+    set login_name = #{loginName,jdbcType=VARCHAR},
+      login_pwd = #{loginPwd,jdbcType=VARCHAR},
+      user_name = #{userName,jdbcType=VARCHAR},
+      province_id = #{provinceId,jdbcType=INTEGER},
+      identity = #{provinceId,jdbcType=INTEGER},
+      city_id = #{cityId,jdbcType=INTEGER},
+      service_point_id = #{servicePointId,jdbcType=INTEGER},
+      last_login_ip = #{lastLoginIp,jdbcType=VARCHAR},
+      last_login_time = #{lastLoginTime,jdbcType=VARCHAR},
+      login_times = #{loginTimes,jdbcType=INTEGER},
+      status = #{status,jdbcType=SMALLINT},
+      user_post = #{userPost,jdbcType=VARCHAR},
+      create_time = #{createTime,jdbcType=VARCHAR},
+      create_user_id = #{createUserId,jdbcType=INTEGER},
+      create_user_name = #{createUserName,jdbcType=VARCHAR},
+      update_user_id = #{updateUserId,jdbcType=INTEGER},
+      update_user_name = #{updateUserName,jdbcType=VARCHAR},
+      update_time = #{updateTime,jdbcType=VARCHAR},
+      province = #{province,jdbcType=INTEGER},
+      city = #{city,jdbcType=INTEGER},
+      service_point = #{servicePoint,jdbcType=INTEGER}
+    where user_id = #{userId,jdbcType=INTEGER}
+  </update>
+
+  <select id="queryRoles" parameterType="Integer" resultType="Map">
+      SELECT role_id,role_name,
+      (SELECT COUNT(1) FROM sys_role_user sru WHERE sr.role_id=sru.role_id AND sru.user_id=#{userId})  ishave
+      FROM sys_roles  sr
+      WHERE sr.`status`=1
+    </select>
+
+  <!-- 删除当前用户的角色信息 -->
+  <delete id="deleteUserRoles" parameterType="Integer">
+    delete from sys_role_user where user_id=#{userId}
+  </delete>
+  <!-- 保存角色信息 -->
+  <insert id="addUserRoles" parameterType="List">
+      INSERT INTO sys_role_user (user_id, role_id, create_time, create_user_id, create_user_name)
+      VALUES
+      <foreach collection="list" separator="," item="srr">
+        (#{srr.userId}, #{srr.roleId}, #{srr.createTime}, #{srr.createUserId}, #{srr.createUserName})
+      </foreach>
+
+  </insert>
+
+</mapper>
