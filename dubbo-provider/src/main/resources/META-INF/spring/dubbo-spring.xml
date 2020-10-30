@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:dubbo="http://dubbo.apache.org/schema/dubbo"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://dubbo.apache.org/schema/dubbo
+       http://dubbo.apache.org/schema/dubbo/dubbo.xsd">
+
+
+    <import resource="classpath*:applicationContext-jdbc.xml"/>
+
+    <dubbo:application name="tvmall-Leon" />
+    <dubbo:provider group="tvmall" version="2.0" dynamic="true" loadbalance="random"/>
+    <!-- 注册中心 -->
+    <dubbo:registry address="192.168.68.51:2181,192.168.68.52:2181,192.168.68.53:2181" protocol="zookeeper" timeout="60000"/>
+    <!-- <dubbo:registry address="zookeeper://192.168.50.31:2181?backup=192.168.50.32:2181,192.168.50.33:2181"  timeout="60000"/>-->
+
+    <!--
+     开启注解扫描：
+      <context:component-scan .../>  开启 @Controller @Service..
+      <mvc:annotation-driven/>  @RequestMapping
+      <mvc:default-servlet-handler/> 处理静态资源
+      <tx:annotation-driven proxy-target-class="true"/> 事务注解扫描 @Transactional
+      <aop:aspectj-autoproxy proxy-target-class="true"/> 开启对@Aspect @Before...
+      <dubbo:annotation />  开启对dubbo @Service @Reference注解扫描
+    -->
+
+    <!-- 开启dubbo注解扫描 -->
+     <dubbo:annotation package="cn.yunhe.java.serviceImpl"/>
+     <!--<bean id="goodsClassService" class="cn.yunhe.java.serviceImpl.goods.MallGoodsClassServiceImpl" />
+     <bean id="orderService" class="cn.yunhe.java.serviceImpl.goods.OrderServiceImpl"/>
+     <bean id="loginService" class="cn.yunhe.java.serviceImpl.login.LoginServiceImpl"/>
+     <bean id="menuService" class="cn.yunhe.java.serviceImpl.sysmgr.MenuServiceImpl"/>
+     <bean id="rolesService" class="cn.yunhe.java.serviceImpl.sysmgr.RolesServiceImpl"/>
+     <bean id="sysUserService" class="cn.yunhe.java.serviceImpl.sysmgr.SysUserServiceImpl"/>
+
+
+     <dubbo:service interface="cn.yunhe.java.services.goods.OrderService" ref="orderService" actives="8" group="tvmall" version="3.0"/>
+     <dubbo:service interface="cn.yunhe.java.services.goods.MallGoodsClassService" ref="goodsClassService"/>
+     <dubbo:service interface="cn.yunhe.java.services.login.LoginService" ref="loginService"/>
+     <dubbo:service interface="cn.yunhe.java.services.sysmgr.MenuService" ref="menuService"/>
+     <dubbo:service interface="cn.yunhe.java.services.sysmgr.RolesService" ref="rolesService"/>
+     <dubbo:service interface="cn.yunhe.java.services.sysmgr.SysUserService" ref="sysUserService"/> -->
+</beans>
