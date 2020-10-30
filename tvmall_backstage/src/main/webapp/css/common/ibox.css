@@ -1,0 +1,78 @@
+body{
+	background-color: #e2e2e2;
+}
+	
+.ibox{}
+
+.ibox > .ibox-title{
+	background-color: #ffffff;
+	margin: 10px;
+	padding: 0px;
+}
+
+.ibox > .ibox-title > .title{
+	margin: 0px;
+	padding: 12px;
+	font-size: 18px;
+}
+
+.ibox > .ibox-title > .title:before {
+	content: "";
+	padding: 0px;
+	margin: 0px;
+	margin-left: -12px;
+    border-top: 15px solid #009688;
+    border-bottom: 13px solid #009688;
+    border-left: 5px solid #009688;
+    border-right: 0px solid #009688;
+}
+
+.ibox > .ibox-seach{
+	background-color: #ffffff;
+	margin: 10px;
+	padding: 10px;
+	padding-top:20px;
+	border-radius: 5px;
+}
+
+.ibox > .ibox-content{
+	background-color: #ffffff;
+	margin: 10px;
+	padding: 10px;
+	border-radius: 5px;
+}
+.ibox > .ibox-content > .ibox-toolbar{
+	margin-top: 5px;
+	margin-bottom: 25px;
+}
+	
+
+*::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+    background-color: #eee;
+}
+*::-webkit-scrollbar-track {
+    background-color: #eee;
+	border-radius: 10px;
+	-webkit-border-radius: 10px;
+	-moz-border-radius: 10px;
+}
+*::-webkit-scrollbar-thumb {
+    background: #555;
+	border-radius: 10px;
+	-webkit-border-radius: 10px;
+	-moz-border-radius: 10px;
+}
+*::-webkit-scrollbar-button:start {
+    padding: 0px;
+}
+*::-webkit-scrollbar-button:end {
+    padding: 0px;
+} 
+.panel-padding .layui-input-inline{
+	width: 150px
+}
+.form-search .layui-input-inline{
+	width: 150px
+}

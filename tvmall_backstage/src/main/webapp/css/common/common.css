@@ -1,0 +1,112 @@
+/**�Զ���*/
+body{
+	background-color: #e2e2e2;
+}
+.panel {
+    margin-bottom: 10px;
+    background-color: #fff;
+    border: 1px solid transparent;
+    border-radius: 4px;
+    -webkit-box-shadow: 0 1px 1px rgba(0,0,0,0.05);
+    box-shadow: 0 1px 1px rgba(0,0,0,0.05);
+   
+}
+.panel-padding {
+    padding: 10px 10px 0px 10px;
+}
+.ibox {
+	clear: both;
+	margin-bottom: 25px;
+	margin-top: 0;
+	padding: 0;
+}
+
+.ibox-title {
+	border-bottom: 1px solid #e7eaec;
+	color: inherit;
+	margin-bottom: 0;
+	padding: 0px 15px 0px 15px;
+	min-height: 48px;
+}
+
+.ibox > .ibox-title{
+	background-color: #ffffff;
+	margin: 10px 10px 0px 10px;
+	padding: 0px;
+}
+
+.ibox > .ibox-title > .title{
+	margin: 0px;
+	padding: 12px;
+	font-size: 18px;
+}
+
+.ibox > .ibox-title > .title:before {
+	content: "";
+	padding: 0px;
+	margin: 0px;
+	margin-left: -12px;
+    border-top: 15px solid #009688;
+    border-bottom: 13px solid #009688;
+    border-left: 5px solid #009688;
+    border-right: 0px solid #009688;
+}
+.notselect {
+	-webkit-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
+}
+.ibox-content {
+	background-color: #fff;
+	color: inherit;
+	padding: 10px;
+	background-color: rgba(0, 0, 0, 0.005);
+}
+.bodycss{
+  background-color: rgba(0, 0, 0, 0.005);
+}
+h5 {
+	display: block;
+	font-size: 1em;
+	-webkit-margin-before: 1.67em;
+	-webkit-margin-after: 1.67em;
+	-webkit-margin-start: 0px;
+	-webkit-margin-end: 0px;
+	font-weight: bold;
+}
+.form-search .layui-input-inline{
+	width: 150px
+}
+.layui-input-block img{
+	max-width: 100%;
+}
+*::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+    background-color: #eee;
+}
+*::-webkit-scrollbar-track {
+    background-color: #eee;
+	border-radius: 10px;
+	-webkit-border-radius: 10px;
+	-moz-border-radius: 10px;
+}
+*::-webkit-scrollbar-thumb {
+    background: #555;
+	border-radius: 10px;
+	-webkit-border-radius: 10px;
+	-moz-border-radius: 10px;
+}
+*::-webkit-scrollbar-button:start {
+    padding: 0px;
+}
+*::-webkit-scrollbar-button:end {
+    padding: 0px;
+} 
+.tab-menu-css a{
+	padding-left: 15px;
+}
+.tab-menu-css a i{
+	font-size: 16px;
+}

@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:mvc="http://www.springframework.org/schema/mvc"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+        https://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context
+        https://www.springframework.org/schema/context/spring-context.xsd
+        http://www.springframework.org/schema/mvc
+        https://www.springframework.org/schema/mvc/spring-mvc.xsd">
+
+    <context:component-scan base-package="cn.yunhe.java" />
+
+    <!-- 开启对@RequestMapping...  扫描 -->
+    <mvc:annotation-driven/>
+    <!-- 对静态资源的处理 js/css/images-->
+    <mvc:default-servlet-handler/>
+
+    <!-- 视图解析器-->
+    <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+        <property name="prefix" value="/WEB-INF/pages/"/>
+        <property name="suffix" value=".jsp"/>
+    </bean>
+
+    <!-- 拦截器 -->
+    <mvc:interceptors>
+        <mvc:interceptor>
+            <mvc:mapping path="/*/*"/>
+            <mvc:exclude-mapping path="/login/doLogin"/>
+            <mvc:exclude-mapping path="/login/exit"/>
+            <mvc:exclude-mapping path="/login/verifyCode"/>
+            <mvc:exclude-mapping path="/css/*"/>
+            <mvc:exclude-mapping path="/images/*"/>
+            <mvc:exclude-mapping path="/js/*"/>
+            <bean id="loginInterceptor" class="cn.yunhe.java.interceptor.LoginInterceptor"/>
+        </mvc:interceptor>
+    </mvc:interceptors>
+
+    <!-- 配置图片上传需要的类 id值必须为multipartResolver -->
+    <!-- 上传拦截，如最大上传值及最小上传值 -->
+    <bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+        <property name="maxUploadSize">
+            <value>104857600</value>
+        </property>
+        <property name="maxInMemorySize">
+            <value>4096</value>
+        </property>
+        <property name="defaultEncoding">
+            <value>utf-8</value>
+        </property>
+    </bean>
+    <!-- 启动dubbo容器 -->
+    <import resource="classpath*:applicationContext-dubbo.xml"/>
+</beans>

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:dubbo="http://dubbo.apache.org/schema/dubbo"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://dubbo.apache.org/schema/dubbo
+       http://dubbo.apache.org/schema/dubbo/dubbo.xsd">
+    
+    <dubbo:application name="tvmall-consumer" />
+    <!-- 消费方的缺省配置 -->
+    <dubbo:consumer group="tvmall" version="2.0"/>
+    <dubbo:registry address="192.168.68.51:2181,192.168.68.52:2181,192.168.68.53:2181" protocol="zookeeper" timeout="60000"/>
+
+    <!-- 开启注解扫描，扫描注解@Reference -->
+    <dubbo:annotation package="cn.yunhe.java.controller" />
+
+    <!--<dubbo:reference id="mallGoodsClassService" interface="cn.yunhe.java.services.goods.MallGoodsClassService"/>
+    <dubbo:reference id="orderService" interface="cn.yunhe.java.services.goods.OrderService"/>
+    <dubbo:reference id="loginService" interface="cn.yunhe.java.services.login.LoginService"/>
+    <dubbo:reference id="sysUserService" interface="cn.yunhe.java.services.sysmgr.SysUserService"/>
+    <dubbo:reference id="rolesService" interface="cn.yunhe.java.services.sysmgr.RolesService"/>
+    <dubbo:reference id="menuService" interface="cn.yunhe.java.services.sysmgr.MenuService"/>-->
+    
+</beans>
